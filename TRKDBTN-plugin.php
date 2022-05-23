@@ -27,10 +27,20 @@ define('WPTRKDBTN_URL', trailingslashit(plugins_url('/', __FILE__)));
  * Loading Scripts
  */
 
-add_action('admin_enqueue_scripts', 'load_scripts');
+add_action('admin_enqueue_scripts', 'load_admin_scripts');
+add_action('wp_enqueue_scripts', 'load_scripts');
+function load_admin_scripts()
+{
+    wp_enqueue_script('wp-TRKDBTN', WPTRKDBTN_URL . 'dist/adminApp.js', ['jquery', 'wp-element'], wp_rand(), true);
+    wp_localize_script('wp-TRKDBTN', 'appLocalizer', [
+        'apiUrl' => home_url('/wp-json'),
+        'nonce' => wp_create_nonce('wp_rest'),
+    ]);
+}
+
 function load_scripts()
 {
-    wp_enqueue_script('wp-TRKDBTN', WPTRKDBTN_URL . 'dist/bundle.js', ['jquery', 'wp-element'], wp_rand(), true);
+    wp_enqueue_script('wp-TRKDBTN', WPTRKDBTN_URL . 'dist/app.js', ['jquery', 'wp-element'], wp_rand(), true);
     wp_localize_script('wp-TRKDBTN', 'appLocalizer', [
         'apiUrl' => home_url('/wp-json'),
         'nonce' => wp_create_nonce('wp_rest'),
@@ -38,27 +48,8 @@ function load_scripts()
 }
 
 require_once WPTRKDBTN_PATH . 'classes/class-create-admin-menu.php';
-
-/*
-register_activation_hook(__FILE__, 'TRKDBTN_plugin_activate');
-register_deactivation_hook(__FILE__, 'TRKDBTN_plugin_deactivate');
-add_filter('script_loader_tag', 'TRKDBTN_add_async_defer_attributes', 10, 2);
-add_shortcode('delegate_cardano_btn', 'TRKDBTN_plugin_delegate_cardano_btn');
-
-function TRKDBTN_plugin_delegate_cardano_btn()
-{
-    return TRKDBTN_plugin_cardano_btn();
-}
-function TRKDBTN_plugin_deactivate()
-{
-    return;
-}
-function TRKDBTN_plugin_activate()
-{
-    return;
-}
-
-
+require_once WPTRKDBTN_PATH . 'classes/class-create-settings-routes.php';
+require_once WPTRKDBTN_PATH . 'classes/class-create-delegation-cardano-btn.php';
 
 # Activate Logs
 if (!function_exists('write_log')) {
@@ -73,4 +64,3 @@ if (!function_exists('write_log')) {
         }
     }
 }
-*/

@@ -1,5 +1,4 @@
 import React from "react"
-import { Settings } from "./components/Settings"
+import { DelegationBtn } from "./components/DelegationBtn"
 
-export const App = () => <Settings />  
-
+export const App = () => <DelegationBtn />  

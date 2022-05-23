@@ -2,10 +2,33 @@ import React, { useState, useEffect } from "react"
 import axios from "axios"
 
 export const Settings = () => {
+  const [poolId, setPoolId] = useState('')
+  const [loader, setLoader] = useState('Save Settings')
+
+  const url = `${appLocalizer.apiUrl}/wptrkdbtn/v1/settings`
+
+  useEffect(() => {
+    axios.get(url).then(res => setPoolId(res.data.poolId))
+  }, [])
+
+  const handleSubmit = e => {
+    e.preventDefault()
+    setLoader('Saving...')
+    console.log("URL", appLocalizer)
+    axios.post(url, { poolId },{
+      headers:{
+        'content-type': 'application/json',
+        'X-WP-NONCE': appLocalizer.nonce
+      }
+    }).then((resp) => {
+      setLoader('Save Settings')
+    })
+  }
+
   return (
     <>
-    <h2>Welcome!</h2>
-      <form id="wptrkdbtn-settings-form">
+      <h2>Set your Pool id for your delegation Button</h2>
+      <form id="wptrkdbtn-settings-form" onSubmit={e => handleSubmit(e)}>
         <table className="form-table" role="presentation">
           <tbody>
             <tr>
@@ -16,7 +39,8 @@ export const Settings = () => {
                 <input
                   id="poolId"
                   name="poolId"
-                  value="pool1aqg6fvhcaulvss2ruvpx6ur9vj7pejvdcxv6xp0qlwuwx94evf0"
+                  value={poolId}
+                  onChange={e => setPoolId(e.target.value)}
                   className="regular-text"
                 />
               </td>
@@ -24,7 +48,9 @@ export const Settings = () => {
           </tbody>
         </table>
         <p className="submit">
-            <button type="submit" clasname="button button-primary">Save</button>
+          <button type="submit" className="button button-primary">
+            {loader}
+          </button>
         </p>
       </form>
     </>
