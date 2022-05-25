@@ -29,7 +29,8 @@ class WPTRKDBTN_Create_Admin_Page
 
     public function menu_page_template()
     {
-        echo '<div class=wrap><div id="wptrkdbtn-admin-app"></div></div>';
+        # class=wrap
+        echo '<div><div id="wptrkdbtn-admin-app"></div></div>';
     }
 }
 

@@ -36,6 +36,8 @@ function load_admin_scripts()
         'apiUrl' => home_url('/wp-json'),
         'nonce' => wp_create_nonce('wp_rest'),
     ]);
+    wp_register_style('toast_styles', WPTRKDBTN_URL . 'dist/adminApp.css');
+    wp_enqueue_style('toast_styles'); 
 }
 
 function load_scripts()
@@ -45,6 +47,8 @@ function load_scripts()
         'apiUrl' => home_url('/wp-json'),
         'nonce' => wp_create_nonce('wp_rest'),
     ]);
+    wp_register_style('toast_styles', WPTRKDBTN_URL . 'css/app.css');
+    wp_enqueue_style('toast_styles');
 }
 
 require_once WPTRKDBTN_PATH . 'classes/class-create-admin-menu.php';

@@ -1,4 +1,5 @@
 const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
     entry: {
@@ -15,13 +16,32 @@ module.exports = {
     },
     module: {
         rules: [{
-            test: /\.(js|jsx)$/,
-            exclude: /node_modules/,
-            use: {
-                loader: 'babel-loader',
+                test: /\.(js|jsx)$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                },
+            }, {
+                test: /\.html$/,
+                use: [{
+                    loader: 'html-loader',
+                }, ],
             },
-        }, ],
+            {
+                test: /\.css$/,
+                use: [{
+                        loader: MiniCssExtractPlugin.loader,
+                    },
+                    'css-loader',
+                ],
+            },
+        ],
     },
+    plugins: [
+        new MiniCssExtractPlugin({
+            filename: '[name].css',
+        }),
+    ],
     experiments: {
         asyncWebAssembly: true,
         // WebAssembly as async module (Proposal)       
