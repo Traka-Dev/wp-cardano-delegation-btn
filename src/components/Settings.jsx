@@ -53,11 +53,11 @@ export const Settings = () => {
     if (formData.network == 1) {
       //Mainnet check
       if (formData.mainnetApiKey.length < 20) {
-        errors.mainnetApiKey = "FALSE MAIN"
+        errors.mainnetApiKey = "Invalid Mainnet Api Key"
       }
     } else {
       if (formData.testnetApiKey.length < 20) {
-        errors.testnetApiKey = "FALSE 4MAIN"
+        errors.testnetApiKey = "Invalid Testnet Api Key"
       }
     }
     return errors
