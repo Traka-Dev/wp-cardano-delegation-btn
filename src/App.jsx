@@ -1,6 +1,5 @@
-__webpack_public_path__ = window.resourceBasePath;
 import React from "react"
-import { DelegationBtn } from "./components/DelegationBtn"
+import { Delegation } from "./components/Delegation"
 import { ToastContainer } from 'react-toastify';
 
 export const App = () => (
@@ -15,8 +14,8 @@ export const App = () => (
       pauseOnFocusLoss
       draggable
       pauseOnHover
-      style={{ marginTop: '15px', width: '600px' }} 
+      style={{ marginTop: '15px', maxWidth: '50vw', width: "400px"}} 
     />
-    <DelegationBtn />
+    <Delegation />
   </>
 )

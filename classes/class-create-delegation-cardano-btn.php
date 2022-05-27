@@ -13,7 +13,7 @@ class WP_React_Delegation_Cardano_Btn
     static function TRKDBTN_delegation_cardano_btn()
     {
         return '<script type="application/javascript">
-            window.resourceBasePath = "' . WPTRKDBTN_URL . '";
+            window.mytrkBasePath = "' . WPTRKDBTN_URL . '";
         </script>
         <div class=wrap>
             <div id="wptrkdbtn-app"></div>
@@ -31,7 +31,7 @@ class WP_React_Delegation_Cardano_Btn
             $tag = str_replace(' src', ' defer="defer" type="module" src', $tag);
         endif;
         if ($handle === "wp-TRKDBTN-app") :
-            $tag = str_replace(' src', ' defer="defer" type="module" src', $tag);
+            $tag = str_replace(' src', ' defer="defer" src', $tag);
         endif;
         return $tag;
     }

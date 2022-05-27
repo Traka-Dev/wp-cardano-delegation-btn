@@ -1,4 +1,4 @@
-import { MultiAsset, TransactionOutputs, TransactionUnspentOutput } from '@emurgo/cardano-serialization-lib-asmjs'
+import { MultiAsset, ProtocolVersion, TransactionOutputs, TransactionUnspentOutput } from '@emurgo/cardano-serialization-lib-asmjs'
 import { Buffer } from 'buffer'
 
 
@@ -163,6 +163,7 @@ export default async function CardanoWalletsApi(WalletObject, blockfrostApiKey, 
 
         let minAda = CSL.min_ada_required(
             outputValue,
+            false,
             CSL.BigNum.from_str(protocolParameter.minUtxo || "1000000")
         )
         if (CSL.BigNum.from_str(lovelace).compare(minAda) < 0) outputValue.set_coin(minAda)
@@ -215,6 +216,7 @@ export default async function CardanoWalletsApi(WalletObject, blockfrostApiKey, 
 
             let minAda = CSL.min_ada_required(
                 outputValue,
+                false,
                 CSL.BigNum.from_str(protocolParameter.minUtxo || "1000000")
             )
             if (CSL.BigNum.from_str(lovelace).compare(minAda) < 0) outputValue.set_coin(minAda)
@@ -242,7 +244,7 @@ export default async function CardanoWalletsApi(WalletObject, blockfrostApiKey, 
     }
 
     async function delegate({ poolId, metadata = null, metadataLabel = '721' }) {
-        let protocolParameter = await _getProtocolParameter()
+        let ProtocolParameter = await _getProtocolParameter()
 
         let stakeKeyHash = CSL.RewardAddress.from_address(
             CSL.Address.from_bytes(
@@ -267,6 +269,9 @@ export default async function CardanoWalletsApi(WalletObject, blockfrostApiKey, 
         //check if you already delegated to the same pool
         if (delegation.poolId !== poolId) {
             let pool = await _blockfrostRequest(`/pools/${poolId}`)
+            if (pool.hasOwnProperty("error")) {
+                throw { message: "Invalid Pool ID" };
+            }
             let poolHex = pool.hex
 
             let utxos = (await getUtxosHex()).map(u => CSL.TransactionUnspentOutput.from_bytes(Buffer.from(u, 'hex')))
@@ -277,7 +282,7 @@ export default async function CardanoWalletsApi(WalletObject, blockfrostApiKey, 
                 CSL.TransactionOutput.new(
                     CSL.Address.from_bech32(PaymentAddress),
                     CSL.Value.new(
-                        CSL.BigNum.from_str(protocolParameter.keyDeposit)
+                        CSL.BigNum.from_str(ProtocolParameter.keyDeposit)
                     )
                 )
             )
@@ -285,7 +290,7 @@ export default async function CardanoWalletsApi(WalletObject, blockfrostApiKey, 
             let transaction = _txBuilder({
                 PaymentAddress,
                 Utxos: utxos,
-                ProtocolParameter: protocolParameter,
+                ProtocolParameter: ProtocolParameter,
                 Outputs: outputs,
                 Delegation: {
                     poolHex: poolHex,
@@ -431,18 +436,26 @@ export default async function CardanoWalletsApi(WalletObject, blockfrostApiKey, 
             20 + totalAssets,
         )
         const inputs = selection.input;
-        const txBuilder = CSL.TransactionBuilder.new(
-            CSL.LinearFee.new(
-                CSL.BigNum.from_str(ProtocolParameter.linearFee.minFeeA),
-                CSL.BigNum.from_str(ProtocolParameter.linearFee.minFeeB)
-            ),
-            CSL.BigNum.from_str(ProtocolParameter.minUtxo.toString()),
-            CSL.BigNum.from_str(ProtocolParameter.poolDeposit.toString()),
-            CSL.BigNum.from_str(ProtocolParameter.keyDeposit.toString()),
-            MULTIASSET_SIZE,
-            MULTIASSET_SIZE
-        );
+        const txBuilderConfig = CSL.TransactionBuilderConfigBuilder.new()
+            .coins_per_utxo_word(
+                CSL.BigNum.from_str(ProtocolParameter.coins_per_utxo_word)
+            )
+            .fee_algo(
+                CSL.LinearFee.new(
+                    CSL.BigNum.from_str(ProtocolParameter.linearFee.minFeeA.toString()),
+                    CSL.BigNum.from_str(ProtocolParameter.linearFee.minFeeB.toString())
+                )
+            )
+            .key_deposit(CSL.BigNum.from_str(ProtocolParameter.keyDeposit))
+            .pool_deposit(
+                CSL.BigNum.from_str(ProtocolParameter.poolDeposit)
+            )
+            .max_tx_size(ProtocolParameter.maxTxSize)
+            .max_value_size(ProtocolParameter.max_val_size)
+            .prefer_pure_change(true)
+            .build();
 
+        const txBuilder = CSL.TransactionBuilder.new(txBuilderConfig);
         for (let i = 0; i < inputs.length; i++) {
             const utxo = inputs[i];
             txBuilder.add_input(
@@ -549,6 +562,7 @@ export default async function CardanoWalletsApi(WalletObject, blockfrostApiKey, 
 
             const minAda = CSL.min_ada_required(
                 partialChange,
+                false,
                 CSL.BigNum.from_str(ProtocolParameter.minUtxo)
             );
             partialChange.set_coin(minAda);
@@ -620,6 +634,8 @@ export default async function CardanoWalletsApi(WalletObject, blockfrostApiKey, 
             poolDeposit: p.pool_deposit,
             keyDeposit: p.key_deposit,
             maxTxSize: p.max_tx_size,
+            coins_per_utxo_word: p.coins_per_utxo_word,
+            max_val_size: p.max_val_size,
             slot: latestBlock.slot,
         };
 

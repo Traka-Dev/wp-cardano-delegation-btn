@@ -6,10 +6,14 @@ module.exports = {
         app: './src/index.js',
         adminApp: './src/adminApp.js',
     },
+    devServer: {
+        static: './dist',
+    },
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].js',
         clean: true,
+        publicPath: "../wp-content/plugins/ada-pools-delegate/dist/",
     },
     resolve: {
         extensions: ['.js', '.jsx'],
@@ -21,7 +25,18 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                 },
-            }, {
+            },
+            {
+                test: /\.(png|jpe?g|gif)$/i,
+                use: [{
+                    loader: 'file-loader',
+                }, ],
+            },
+            {
+                test: /\.svg$/,
+                loader: 'svg-inline-loader'
+            },
+            {
                 test: /\.html$/,
                 use: [{
                     loader: 'html-loader',

@@ -1,3 +1,4 @@
+__webpack_public_path__ = window.mytrkBasePath + "/dist/"
 import React from "react"
 import { createRoot } from "react-dom/client"
 import { App } from "./App"

@@ -53,18 +53,6 @@ class WP_React_Settings_Rest_Route
         return rest_ensure_response($response);
     }
 
-    public function get_frostblock_call()
-    {
-        $ULR      = "";
-        $response = "";
-        $network  = get_option('wptrkdbtn_settings_network');
-        $apiKey   = $network == 1 ?
-            get_option('wptrkdbtn_settings_mainApiKey') :
-            get_option('wptrkdbtn_settings_testApiKey');
-
-        return rest_ensure_response($response);
-    }
-
     public function get_settings_permission()
     {
         return true;
@@ -74,10 +62,14 @@ class WP_React_Settings_Rest_Route
     {
         $poolId  = get_option('wptrkdbtn_settings_poolId');
         $network = get_option('wptrkdbtn_settings_network');
+        $apiKey  = (int)$network === 1 ?
+            get_option('wptrkdbtn_settings_mainnetApiKey') :
+            get_option('wptrkdbtn_settings_testnetApiKey');
 
         $response = [
             'poolId'  => $poolId,
             'network' => $network,
+            'apiKey'  => $apiKey
         ];
 
         return rest_ensure_response($response);

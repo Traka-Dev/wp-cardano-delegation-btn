@@ -309,6 +309,7 @@ const CoinSelection = {
         let minAmount = Loader.Cardano.Value.new(
             Loader.Cardano.min_ada_required(
                 change,
+                false,
                 Loader.Cardano.BigNum.from_str(protocolParameters.minUTxO)
             )
         );
@@ -735,6 +736,7 @@ function isQtyFulfilled(
         let minAmount = Loader.Cardano.Value.new(
             Loader.Cardano.min_ada_required(
                 cumulatedAmount,
+                false,
                 Loader.Cardano.BigNum.from_str(minUTxOValue.toString())
             )
         );
