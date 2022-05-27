@@ -32,6 +32,12 @@ export const Settings = () => {
   useEffect(() => {
     axios.get(url).then(res => {
       const { poolId, network, mainnetApiKey, testnetApiKey } = res.data
+      if (mainnetApiKey.length > 0)
+        document.getElementById("poolId-helper-text").innerHTML = ""
+      if (mainnetApiKey.length > 0)
+        document.getElementById("mainnetApiKey-helper-text").innerHTML = ""
+      if (testnetApiKey.length > 0)
+        document.getElementById("testnetApiKey-helper-text").innerHTML = ""
       setFormData({
         poolId,
         network,
@@ -48,6 +54,12 @@ export const Settings = () => {
     delete formErrors[name]
     //Update input value
     setFormData({ ...formData, [name]: value })
+    helper = document.getElementById(name + "-helper-text")
+    if (value.length > 0) {
+      helper.innerHTML = ""
+    } else {
+      helper.innerHTML = name
+    }
   }
 
   const StyleMsgError = {
@@ -127,7 +139,6 @@ export const Settings = () => {
             project_id: formData.mainnetApiKey,
           },
         })
-        console.dir(r)
       } catch (error) {
         if (error.request.status == 403) {
           errors.mainnetApiKey = "Invalid Mainnet Api Key"
@@ -224,12 +235,13 @@ export const Settings = () => {
           alignItems: "center",
         }}
       >
-        <div style={{ display: "flex", flexDirection: "column", width: "60%" }}>
+        <div style={{ display: "flex", flexDirection: "column", width: "50%" }}>
           <TextField
             error={formErrors.hasOwnProperty("poolId")}
             id="poolId"
             name="poolId"
             label="Pool ID"
+            helperText="Pool ID"
             variant="standard"
             value={formData.poolId}
             onChange={handleChange}
@@ -253,7 +265,6 @@ export const Settings = () => {
             onClick={handleCC}
             onMouseEnter={e => {
               // style stage container:
-              console.log(";D")
               const container = e.target
               container.style.cursor = "pointer"
             }}
@@ -267,13 +278,13 @@ export const Settings = () => {
             <Typography>Mainnet</Typography>
           </Stack>
         </div>
-        <div style={{ display: "flex", flexDirection: "column", width: "60%" }}>
+        <div style={{ display: "flex", flexDirection: "column", width: "50%" }}>
           <Tooltip title="blockfrost mainnet Api Key" arrow placement="top">
             <TextField
               error={formErrors.hasOwnProperty("mainnetApiKey")}
               label={
                 <span>
-                  Mainnet Api Key{" "}
+                  Mainnet Api Key
                   <a href="https://blockfrost.io/" target="__blank">
                     BlockFrost
                   </a>
@@ -282,6 +293,7 @@ export const Settings = () => {
               variant="standard"
               id="mainnetApiKey"
               name="mainnetApiKey"
+              helperText="Mainnet Api Key"
               value={formData.mainnetApiKey}
               onChange={handleChange}
             />
@@ -291,13 +303,13 @@ export const Settings = () => {
           ) : null}
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", width: "60%" }}>
+        <div style={{ display: "flex", flexDirection: "column", width: "50%" }}>
           <Tooltip title="blockfrost testnet Api Key" arrow placement="top">
             <TextField
               error={formErrors.hasOwnProperty("testnetApiKey")}
               label={
                 <span>
-                  Testnet Api Key{" "}
+                  Testnet Api Key
                   <a href="https://blockfrost.io/" target="__blank">
                     BlockFrost
                   </a>
@@ -306,6 +318,7 @@ export const Settings = () => {
               variant="standard"
               id="testnetApiKey"
               name="testnetApiKey"
+              helperText="Testnet Api Key"
               value={formData.testnetApiKey}
               onChange={handleChange}
             />
