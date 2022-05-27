@@ -11,7 +11,6 @@ import TextField from "@mui/material/TextField"
 import Tooltip from "@mui/material/Tooltip"
 
 //TODO
-// Validations
 // Params from wordpress to react
 // clean Wallet api
 
@@ -99,16 +98,16 @@ export const Settings = () => {
     },
   }))
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault()
-    console.dir(formData)
-    const errors = validate(formData)
+    const errors = await validate(formData)
+    console.log("erorw", errors)
     setFormErrors(errors)
     setLoader("Saving...")
     setIsSubmit(true)
   }
 
-  const validate = formData => {
+  const validate = async formData => {
     const errors = {}
     if (formData.poolId.length < 10) {
       //invalid Pool ID
@@ -117,11 +116,40 @@ export const Settings = () => {
     if (formData.network == 1) {
       //Mainnet check
       if (formData.mainnetApiKey.length < 20) {
-        errors.mainnetApiKey = "Invalid Mainnet Api Key"
+        errors.mainnetApiKey = "Mainnet Api Key is too short"
+        return errors
+      }
+      // Make an api Call to check
+      try {
+        await axios.get("https://cardano-mainnet.blockfrost.io/api/v0/", {
+          headers: {
+            "content-type": "application/json",
+            project_id: formData.mainnetApiKey,
+          },
+        })
+        console.dir(r)
+      } catch (error) {
+        if (error.request.status == 403) {
+          errors.mainnetApiKey = "Invalid Mainnet Api Key"
+        }
       }
     } else {
       if (formData.testnetApiKey.length < 20) {
         errors.testnetApiKey = "Invalid Testnet Api Key"
+        return errors
+      }
+      // Make an api Call to check
+      try {
+        await axios.get("https://cardano-testnet.blockfrost.io/api/v0/", {
+          headers: {
+            "content-type": "application/json",
+            project_id: formData.testnetApiKey,
+          },
+        })
+      } catch (error) {
+        if (error.request.status == 403) {
+          errors.testnetApiKey = "Invalid Testnet Api Key"
+        }
       }
     }
     return errors
@@ -133,7 +161,6 @@ export const Settings = () => {
     } else if (isSubmit) {
       setLoader("Save Settings")
       //Toast Error
-      console.log(formErrors)
       toast.error(`Error Settings not saved`, {
         position: "top-right",
         autoClose: 5000,
