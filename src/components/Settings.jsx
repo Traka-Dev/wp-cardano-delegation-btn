@@ -7,6 +7,13 @@ import Switch from "@mui/material/Switch"
 import Stack from "@mui/material/Stack"
 import Typography from "@mui/material/Typography"
 import { styled } from "@mui/material/styles"
+import TextField from "@mui/material/TextField"
+import Tooltip from "@mui/material/Tooltip"
+
+//TODO
+// Validations
+// Params from wordpress to react
+// clean Wallet api
 
 export const Settings = () => {
   const initialState = {
@@ -177,108 +184,110 @@ export const Settings = () => {
 
   return (
     <>
-      <h2>Set your Pool id for your delegation Button</h2>
-      <form id="wptrkdbtn-settings-form" onSubmit={handleSubmit}>
-        <table className="form-table" role="presentation">
-          <tbody>
-            <tr>
-              <th scope="row">
-                <label htmlFor="poolId">Pool ID</label>
-              </th>
-              <td>
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <input
-                    style={
-                      formErrors.hasOwnProperty("poolId")
-                        ? { border: "2px red solid" }
-                        : null
-                    }
-                    id="poolId"
-                    name="poolId"
-                    value={formData.poolId}
-                    onChange={handleChange}
-                  />
-                  {formErrors.hasOwnProperty("poolId") ? (
-                    <span style={StyleMsgError}>{formErrors.poolId}</span>
-                  ) : null}
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">
-                <label htmlFor="network">Network</label>
-              </th>
-              <Stack
-                direction="row"
-                spacing={1}
-                alignItems="center"
-                onClick={handleCC}
-              >
-                <Typography>Testnet</Typography>
-                <Switch
-                  checked={formData.checked}
-                  id="switchSettings"
-                  onChange={handleChange}
-                />
-                <Typography>Mainnet</Typography>
-              </Stack>
-            </tr>
-            <tr>
-              <th scope="row">
-                <label htmlFor="mainnetApiKey">
-                  BlockFrost Mainnet Api Key
-                </label>
-              </th>
-              <td>
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <input
-                    style={
-                      formErrors.hasOwnProperty("mainnetApiKey")
-                        ? { border: "2px red solid" }
-                        : null
-                    }
-                    id="mainnetApiKey"
-                    name="mainnetApiKey"
-                    value={formData.mainnetApiKey}
-                    onChange={handleChange}
-                  />
-                  {formErrors.hasOwnProperty("mainnetApiKey") ? (
-                    <span style={StyleMsgError}>
-                      {formErrors.mainnetApiKey}
-                    </span>
-                  ) : null}
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">
-                <label htmlFor="testnetApiKey">
-                  BlockFrost Testnet Api Key
-                </label>
-              </th>
-              <td>
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <input
-                    style={
-                      formErrors.hasOwnProperty("testnetApiKey")
-                        ? { border: "2px red solid" }
-                        : null
-                    }
-                    id="testnetApiKey"
-                    name="testnetApiKey"
-                    value={formData.testnetApiKey}
-                    onChange={handleChange}
-                  />
-                  {formErrors.hasOwnProperty("testnetApiKey") ? (
-                    <span style={StyleMsgError}>
-                      {formErrors.testnetApiKey}
-                    </span>
-                  ) : null}
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <h2>Delegation Buttons Settings</h2>
+      <form
+        id="wptrkdbtn-settings-form"
+        onSubmit={handleSubmit}
+        style={{
+          width: "98%",
+          minHeight: "60vh",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-around",
+          alignItems: "center",
+        }}
+      >
+        <div style={{ display: "flex", flexDirection: "column", width: "60%" }}>
+          <TextField
+            error={formErrors.hasOwnProperty("poolId")}
+            id="poolId"
+            name="poolId"
+            label="Pool ID"
+            variant="standard"
+            value={formData.poolId}
+            onChange={handleChange}
+          />
+          {formErrors.hasOwnProperty("poolId") ? (
+            <span style={StyleMsgError}>{formErrors.poolId}</span>
+          ) : null}
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "60%",
+          }}
+        >
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            onClick={handleCC}
+            onMouseEnter={e => {
+              // style stage container:
+              console.log(";D")
+              const container = e.target
+              container.style.cursor = "pointer"
+            }}
+          >
+            <Typography>Testnet</Typography>
+            <Switch
+              checked={formData.checked}
+              id="switchSettings"
+              onChange={handleChange}
+            />
+            <Typography>Mainnet</Typography>
+          </Stack>
+        </div>
+        <div style={{ display: "flex", flexDirection: "column", width: "60%" }}>
+          <Tooltip title="blockfrost mainnet Api Key" arrow placement="top">
+            <TextField
+              error={formErrors.hasOwnProperty("mainnetApiKey")}
+              label={
+                <span>
+                  Mainnet Api Key{" "}
+                  <a href="https://blockfrost.io/" target="__blank">
+                    BlockFrost
+                  </a>
+                </span>
+              }
+              variant="standard"
+              id="mainnetApiKey"
+              name="mainnetApiKey"
+              value={formData.mainnetApiKey}
+              onChange={handleChange}
+            />
+          </Tooltip>
+          {formErrors.hasOwnProperty("mainnetApiKey") ? (
+            <span style={StyleMsgError}>{formErrors.mainnetApiKey}</span>
+          ) : null}
+        </div>
+
+        <div style={{ display: "flex", flexDirection: "column", width: "60%" }}>
+          <Tooltip title="blockfrost testnet Api Key" arrow placement="top">
+            <TextField
+              error={formErrors.hasOwnProperty("testnetApiKey")}
+              label={
+                <span>
+                  Testnet Api Key{" "}
+                  <a href="https://blockfrost.io/" target="__blank">
+                    BlockFrost
+                  </a>
+                </span>
+              }
+              variant="standard"
+              id="testnetApiKey"
+              name="testnetApiKey"
+              value={formData.testnetApiKey}
+              onChange={handleChange}
+            />
+          </Tooltip>
+          {formErrors.hasOwnProperty("testnetApiKey") ? (
+            <span style={StyleMsgError}>{formErrors.testnetApiKey}</span>
+          ) : null}
+        </div>
+
         <Button variant="contained" type="submit">
           {loader}
         </Button>
