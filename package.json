@@ -11,8 +11,11 @@
         "build": "webpack --mode production"
     },
     "dependencies": {
+        "@emotion/react": "^11.9.0",
+        "@emotion/styled": "^11.8.1",
         "@emurgo/cardano-serialization-lib-asmjs": "^10.0.4",
         "@emurgo/cardano-serialization-lib-browser": "^10.1.0",
+        "@mui/material": "^5.8.1",
         "axios": "^0.27.2",
         "buffer": "^6.0.3",
         "node-fetch": "^2.6.6",

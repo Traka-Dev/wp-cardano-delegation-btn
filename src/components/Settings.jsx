@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from "react"
 import axios from "axios"
+import Button from "@mui/material/Button"
 import { toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
+import Switch from "@mui/material/Switch"
+import Stack from "@mui/material/Stack"
+import Typography from "@mui/material/Typography"
+import { styled } from "@mui/material/styles"
 
 export const Settings = () => {
   const initialState = {
@@ -9,6 +14,7 @@ export const Settings = () => {
     network: 0,
     mainnetApiKey: "",
     testnetApiKey: "",
+    checked: false,
   }
   const [formData, setFormData] = useState(initialState)
   const [formErrors, setFormErrors] = useState({})
@@ -20,7 +26,13 @@ export const Settings = () => {
   useEffect(() => {
     axios.get(url).then(res => {
       const { poolId, network, mainnetApiKey, testnetApiKey } = res.data
-      setFormData({ poolId, network, mainnetApiKey, testnetApiKey })
+      setFormData({
+        poolId,
+        network,
+        mainnetApiKey,
+        testnetApiKey,
+        checked: network == 1,
+      })
     })
   }, [])
 
@@ -35,9 +47,54 @@ export const Settings = () => {
   const StyleMsgError = {
     color: "red",
   }
+  const AntSwitch = styled(Switch)(({ theme }) => ({
+    width: 28,
+    height: 16,
+    padding: 0,
+    display: "flex",
+    "&:active": {
+      "& .MuiSwitch-thumb": {
+        width: 15,
+      },
+      "& .MuiSwitch-switchBase.Mui-checked": {
+        transform: "translateX(9px)",
+      },
+    },
+    "& .MuiSwitch-switchBase": {
+      padding: 2,
+      "&.Mui-checked": {
+        transform: "translateX(12px)",
+        color: "#fff",
+        "& + .MuiSwitch-track": {
+          opacity: 1,
+          backgroundColor:
+            theme.palette.mode === "dark" ? "#177ddc" : "#1890ff",
+        },
+      },
+    },
+    "& .MuiSwitch-thumb": {
+      boxShadow: "0 2px 4px 0 rgb(0 35 11 / 20%)",
+      width: 12,
+      height: 12,
+      borderRadius: 6,
+      transition: theme.transitions.create(["width"], {
+        duration: 200,
+      }),
+    },
+    "& .MuiSwitch-track": {
+      borderRadius: 16 / 2,
+      opacity: 1,
+      backgroundColor:
+        theme.palette.mode === "dark"
+          ? "rgba(255,255,255,.35)"
+          : "rgba(0,0,0,.25)",
+      boxSizing: "border-box",
+    },
+  }))
 
   const handleSubmit = e => {
     e.preventDefault()
+    console.dir(formData)
     const errors = validate(formData)
     setFormErrors(errors)
     setLoader("Saving...")
@@ -66,11 +123,11 @@ export const Settings = () => {
   useEffect(() => {
     if (Object.keys(formErrors).length === 0 && isSubmit) {
       saveOptions()
-    } else if(isSubmit) {
+    } else if (isSubmit) {
       setLoader("Save Settings")
       //Toast Error
       console.log(formErrors)
-      toast.error(`Fail to save`, {
+      toast.error(`Error Settings not saved`, {
         position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
@@ -108,6 +165,16 @@ export const Settings = () => {
       })
   }
 
+  const handleCC = async () => {
+    let newNetwork = formData.checked ? 0 : 1
+    await setFormData({
+      ...formData,
+      network: newNetwork,
+      checked: !formData.checked,
+    })
+    console.log("sd", newNetwork)
+  }
+
   return (
     <>
       <h2>Set your Pool id for your delegation Button</h2>
@@ -141,16 +208,20 @@ export const Settings = () => {
               <th scope="row">
                 <label htmlFor="network">Network</label>
               </th>
-              <td>
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  <input
-                    id="network"
-                    name="network"
-                    value={formData.network}
-                    onChange={handleChange}
-                  />
-                </div>
-              </td>
+              <Stack
+                direction="row"
+                spacing={1}
+                alignItems="center"
+                onClick={handleCC}
+              >
+                <Typography>Testnet</Typography>
+                <Switch
+                  checked={formData.checked}
+                  id="switchSettings"
+                  onChange={handleChange}
+                />
+                <Typography>Mainnet</Typography>
+              </Stack>
             </tr>
             <tr>
               <th scope="row">
@@ -208,11 +279,9 @@ export const Settings = () => {
             </tr>
           </tbody>
         </table>
-        <p className="submit">
-          <button type="submit" className="button button-primary">
-            {loader}
-          </button>
-        </p>
+        <Button variant="contained" type="submit">
+          {loader}
+        </Button>
       </form>
     </>
   )
