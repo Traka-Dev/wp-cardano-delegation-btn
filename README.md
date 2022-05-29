@@ -19,4 +19,4 @@ To Do:
 - [ ] Add more wallets
 
 License
-The scripts and documentation in this project are released under the [MIT License](https://github.com/Traka-Dev/wp-cardano-delegation-btn).
+The scripts and documentation in this project are released under the [MIT License](https://github.com/Traka-Dev/wp-cardano-delegation-btn/blob/main/LICENSE).
