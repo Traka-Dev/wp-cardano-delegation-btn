@@ -5,7 +5,7 @@
  * Description: Add Deleagete ADA button to your stake pool
  * Author: TrakaDev
  * Author URI: https://trakdev.com/
- * Text Domain: delegate-ada-pool-plugin
+ * Text Domain: trkdbtn-plugin
  * Domain Path: /languages
  * Version: 1.0.0
  * Requires PHP: 7.3

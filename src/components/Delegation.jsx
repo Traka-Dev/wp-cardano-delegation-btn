@@ -14,7 +14,6 @@ export const Delegation = () => {
    * server, then import the WASM_lib, and finally call the delegate function.
    */
   const handleClick = async walletName => {
-    console.dir(walletName)
     const getPoolId = await axios.get(url)
     if (
       getPoolId.status === 200 &&
@@ -81,7 +80,6 @@ export const Delegation = () => {
             },
           }
         )
-        console.log("btn resp", response)
       } else {
         // NO WALLET
         toast.error(`Wallet ${walletName} not found.`)

@@ -20,3 +20,6 @@ To Do:
 
 License
 The scripts and documentation in this project are released under the [MIT License](https://github.com/Traka-Dev/wp-cardano-delegation-btn/blob/main/LICENSE).
+
+**Donations  Cardano :D**
+addr1qxkmydrx32e2feuy3kd3trpcm34jkmy5jqhaf8py3kquv57vewvf7xr384pvyjd996ela7pp2vyja2sa8nxna5ma68ks9p5zhc

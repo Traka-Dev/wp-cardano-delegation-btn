@@ -4,9 +4,9 @@ import { Buffer } from 'buffer'
 
 
 const ERROR = {
-    FAILED_PROTOCOL_PARAMETER: 'Couldnt fetch protocol parameters from blockfrost',
-    TX_TOO_BIG: 'Transaction too big',
-    NO_COMATIBLE_WALLET: 'No compatible wallet found'
+    FAILED_PROTOCOL_PARAMETER: { message: 'Couldnt fetch protocol parameters from blockfrost' },
+    TX_TOO_BIG: { message: 'Transaction too big' },
+    NO_COMATIBLE_WALLET: { message: 'No compatible wallet found' }
 }
 
 const WALLETS_COMPATIBLE = ['nami', 'ccvault', 'eternl']

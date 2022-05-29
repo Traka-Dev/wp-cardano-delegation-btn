@@ -35,10 +35,10 @@ export const Settings = () => {
       if (testnetApiKey.length > 0)
         document.getElementById("testnetApiKey-helper-text").innerHTML = ""
       setFormData({
-        poolId,
+        poolId: poolId == false ? '' : poolId,
         network,
-        mainnetApiKey,
-        testnetApiKey,
+        mainnetApiKey: mainnetApiKey == false ? '' : mainnetApiKey,
+        testnetApiKey: testnetApiKey == false ? '' : testnetApiKey,
         checked: network == 1,
       })
     })
@@ -109,7 +109,6 @@ export const Settings = () => {
   const handleSubmit = async e => {
     e.preventDefault()
     const errors = await validate(formData)
-    console.log("erorw", errors)
     setFormErrors(errors)
     setLoader("Saving...")
     setIsSubmit(true)
@@ -201,6 +200,8 @@ export const Settings = () => {
             pauseOnHover: true,
             draggable: true,
           })
+        }else{
+          toast.error("Something wen wrong! try again.")
         }
         setLoader("Save Settings")
       })
@@ -213,7 +214,6 @@ export const Settings = () => {
       network: newNetwork,
       checked: !formData.checked,
     })
-    console.log("sd", newNetwork)
   }
 
   return (

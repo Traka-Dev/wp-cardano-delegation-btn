@@ -13,7 +13,7 @@ module.exports = {
         path: path.resolve(__dirname, 'dist'),
         filename: '[name].js',
         clean: true,
-        publicPath: "../wp-content/plugins/ada-pools-delegate/dist/",
+        publicPath: "../wp-content/plugins/trkdbtn-plugin/dist/",
     },
     resolve: {
         extensions: ['.js', '.jsx'],

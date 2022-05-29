@@ -1,5 +1,5 @@
 {
-    "name": "ada-pools-delegate",
+    "name": "trkdbtn-plugin",
     "version": "1.0.0",
     "description": "wp plugin to delegate ada to staker pool",
     "main": "index.js",
