@@ -1,5 +1,5 @@
 # WP Cardano Delegation Button
-Plugin for wordpress to create a delegation cardano ada button for nami, eternl wallets for your favorite stake pool.
+Plugin for wordpress to create a delegation cardano ada button for nami and eternl wallets for your favorite stake pool.
 
 ## Requirements
 * php 7.3+
