@@ -5,9 +5,14 @@ import { DelegationBtn } from "./DelegationBtn"
 import { toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 
+
 export const Delegation = () => {
   const url = `${appLocalizer.apiUrl}/wptrkdbtn/v1/btn-params`
 
+  /**
+   * When the user clicks on a button, the function will get the poolId, network, and apiKey from the
+   * server, then import the WASM_lib, and finally call the delegate function.
+   */
   const handleClick = async walletName => {
     console.dir(walletName)
     const getPoolId = await axios.get(url)
@@ -40,6 +45,11 @@ export const Delegation = () => {
     )
   }
 
+  /**
+   * It takes a poolId, apiKey, WASM_lib, network, and walletName as arguments and returns a toast
+   * notification with a link to the transaction on the blockchain explorer
+   * @returns The response is a promise that resolves to the data returned by the function.
+   */
   const delegate = async (poolId, apiKey, WASM_lib, network, walletName) => {
     try {
       const wallet_obj = window.cardano
@@ -79,6 +89,11 @@ export const Delegation = () => {
     } catch (error) {}
   }
 
+  /**
+   * Delegation is a function that takes a poolId, apiKey, walletName, wallet_obj, WASM_lib, and
+   * network as arguments and returns a response.
+   * @returns The response is a promise that resolves to an object with the following properties:
+   */
   const Delegation = async (
     poolId,
     apiKey,

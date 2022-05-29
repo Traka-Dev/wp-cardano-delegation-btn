@@ -11,6 +11,12 @@ const ERROR = {
 
 const WALLETS_COMPATIBLE = ['nami', 'ccvault', 'eternl']
 
+/**
+ * Find a wallet in the WALLETS_COMPATIBLE array, and if it exists, return the wallet object.
+ * @param walletName - 'cardano wallet name'
+ * @param WalletObject - window.cardano
+ * @returns The wallet object.
+ */
 export const findWallet = async(walletName, WalletObject) => {
     const found_wallet = WALLETS_COMPATIBLE.find(w => w == walletName && WalletObject.hasOwnProperty(walletName))
     if (!found_wallet || found_wallet === undefined || found_wallet === '' || found_wallet === null) {
@@ -21,6 +27,15 @@ export const findWallet = async(walletName, WalletObject) => {
     return await Wallet.enable()
 }
 
+/**
+ * It takes a wallet object, an API key, and a serialization library, and returns an object with
+ * functions that allow you to interact with the wallet
+ * @param WalletObject - The object returned by the Cardano Wallet JS library.
+ * @param blockfrostApiKey - Your Blockfrost API key
+ * @param [serializationLib=null] - This is the Cardano Serialization Library. You can use the one
+ * provided by the library, or you can use your own.
+ * @returns The return value is a function that returns an object.
+ */
 export default async function CardanoWalletsApi(WalletObject, blockfrostApiKey, serializationLib = null) {
 
     const CSL = serializationLib || await
@@ -244,7 +259,7 @@ export default async function CardanoWalletsApi(WalletObject, blockfrostApiKey, 
     }
 
     async function delegate({ poolId, metadata = null, metadataLabel = '721' }) {
-        let ProtocolParameter = await _getProtocolParameter()
+        let ProtocolParameter = await _getProtocolParameter() //block
 
         let stakeKeyHash = CSL.RewardAddress.from_address(
             CSL.Address.from_bytes(
@@ -255,7 +270,7 @@ export default async function CardanoWalletsApi(WalletObject, blockfrostApiKey, 
             )
         ).payment_cred().to_keyhash().to_bytes()
 
-        let delegation = await getDelegation(await getRewardAddress())
+        let delegation = await getDelegation(await getRewardAddress()) //block
 
         async function getDelegation(rewardAddr) {
             let stake = await _blockfrostRequest(`/accounts/${rewardAddr}`)
@@ -268,7 +283,7 @@ export default async function CardanoWalletsApi(WalletObject, blockfrostApiKey, 
         }
         //check if you already delegated to the same pool
         if (delegation.poolId !== poolId) {
-            let pool = await _blockfrostRequest(`/pools/${poolId}`)
+            let pool = await _blockfrostRequest(`/pools/${poolId}`) //block
             if (pool.hasOwnProperty("error")) {
                 throw { message: "Invalid Pool ID" };
             }

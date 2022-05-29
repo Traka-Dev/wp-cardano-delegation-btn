@@ -31,6 +31,11 @@ class WP_React_Settings_Rest_Route
         ]);
     }
 
+    /**
+     * It gets the settings from the database and returns them as a response
+     * 
+     * @return The response is an array of the plugin options.
+     */
     public function get_settings()
     {
         # pool1aqg6fvhcaulvss2ruvpx6ur9vj7pejvdcxv6xp0qlwuwx94evf0 Sarga
@@ -58,6 +63,11 @@ class WP_React_Settings_Rest_Route
         return true;
     }
 
+    /**
+     * It returns the poolId, network, and apiKey from the Wordpress database
+     * 
+     * @return The response is an array of the poolId, network, and apiKey.
+     */
     public function get_delegation_btn_params()
     {
         $poolId  = get_option('wptrkdbtn_settings_poolId');
@@ -75,19 +85,51 @@ class WP_React_Settings_Rest_Route
         return rest_ensure_response($response);
     }
 
+
+    /* A function that validates the settings. */
+    static function validate_settings($poolId, $network, $testnetApiKey, $mainnetApiKey)
+    {
+        if (strlen($poolId) < 10) {
+            return false;
+        }
+
+        if (strlen($mainnetApiKey) < 10) {
+            return false;
+        }
+
+        if (strlen($testnetApiKey) < 10) {
+            return false;
+        }
+
+        if (!($network == 1 || $network == 0)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * It takes in 4 variables, sanitizes them, and then saves them to the database.
+     * 
+     * @param req The request object.
+     * 
+     * @return String success or fail.
+     */
     public function save_settings($req)
     {
         $poolId        = sanitize_text_field($req['poolId']);
         $network       = sanitize_text_field($req['network']);
         $testnetApiKey = sanitize_text_field($req['testnetApiKey']);
         $mainnetApiKey = sanitize_text_field($req['mainnetApiKey']);
-
-        update_option('wptrkdbtn_settings_poolId', $poolId);
-        update_option('wptrkdbtn_settings_network', $network);
-        update_option('wptrkdbtn_settings_testnetApiKey', $testnetApiKey);
-        update_option('wptrkdbtn_settings_mainnetApiKey', $mainnetApiKey);
-
-        return rest_ensure_response('success');
+        if (SELF::validate_settings($poolId, $network, $testnetApiKey, $mainnetApiKey)) {
+            update_option('wptrkdbtn_settings_poolId', $poolId);
+            update_option('wptrkdbtn_settings_network', $network);
+            update_option('wptrkdbtn_settings_testnetApiKey', $testnetApiKey);
+            update_option('wptrkdbtn_settings_mainnetApiKey', $mainnetApiKey);
+            return rest_ensure_response('success');
+        } else {
+            return rest_ensure_response('fail');
+        }
     }
 
     public function save_settings_permission()

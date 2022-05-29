@@ -26,10 +26,6 @@ class WP_React_Delegation_Cardano_Btn
         if (strpos($handle, "async")) :
             $tag = str_replace(' src', ' async="async" src', $tag);
         endif;
-        // Busco el valor "defer"
-        if (strpos($handle, "defer")) :
-            $tag = str_replace(' src', ' defer="defer" type="module" src', $tag);
-        endif;
         if ($handle === "wp-TRKDBTN-app") :
             $tag = str_replace(' src', ' defer="defer" src', $tag);
         endif;

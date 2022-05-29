@@ -2,6 +2,7 @@ import React from "react"
 import namiIcon from "../assets/nami.png"
 import eternlIcon from "../assets/eternl.png"
 
+/* A function that returns a Delegation Button. */
 export const DelegationBtn = ({ text, onClick, inLineStyle, walletName }) => {
   const icon = (
     <div style={{ width: "20%" }}>

@@ -1,8 +1,8 @@
 <?php
 /*
- * Plugin Name: Cardano Delegation BTN
- * Plugin URI: https://github.com/trakadev/
- * Description: Add Deleagete ada button to your pool
+ * Plugin Name: Cardano Delegation Button
+ * Plugin URI: https://github.com/Traka-Dev/wp-cardano-delegation-btn
+ * Description: Add Deleagete ADA button to your stake pool
  * Author: TrakaDev
  * Author URI: https://trakdev.com/
  * Text Domain: delegate-ada-pool-plugin
@@ -10,7 +10,7 @@
  * Version: 1.0.0
  * Requires PHP: 7.3
  * License: MIT
- * License URI: https://github.com/trakadev
+ * License URI: https://github.com/Traka-Dev/wp-cardano-delegation-btn
  */
 
 // If this file is access directly, abort!!!
@@ -29,6 +29,10 @@ define('WPTRKDBTN_URL', trailingslashit(plugins_url('/', __FILE__)));
 
 add_action('admin_enqueue_scripts', 'load_admin_scripts');
 add_action('wp_enqueue_scripts', 'load_scripts');
+
+/**
+ * Loads the admin scripts and styles for the plugin.
+ */
 function load_admin_scripts()
 {
     wp_enqueue_script('wp-TRKDBTN', WPTRKDBTN_URL . 'dist/adminApp.js', ['jquery', 'wp-element'], wp_rand(), true);
@@ -40,6 +44,9 @@ function load_admin_scripts()
     wp_enqueue_style('toast_styles'); 
 }
 
+/**
+ * It loads the app.js file and app.css file.
+ */
 function load_scripts()
 {
     wp_enqueue_script('wp-TRKDBTN-app', WPTRKDBTN_URL . 'dist/app.js', ['jquery', 'wp-element'], wp_rand(), true);
@@ -56,6 +63,7 @@ require_once WPTRKDBTN_PATH . 'classes/class-create-settings-routes.php';
 require_once WPTRKDBTN_PATH . 'classes/class-create-delegation-cardano-btn.php';
 
 # Activate Logs
+/* A function to write logs in the debug.log file. */
 if (!function_exists('write_log')) {
     function write_log($log)
     {

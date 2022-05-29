@@ -4,6 +4,8 @@
  *  create admin menu 
  */
 
+/* It creates a menu item in the admin menu called 'WP Delegate ADA' and when clicked, it will display
+the contents of the menu_page_template() function. */
 class WPTRKDBTN_Create_Admin_Page
 {
 
@@ -12,6 +14,10 @@ class WPTRKDBTN_Create_Admin_Page
         add_action('admin_menu', [$this, 'create_admin_menu']);
     }
 
+    /**
+     * This function creates a menu item in the admin menu called 'WP Delegate ADA' and when clicked,
+     * it will display the contents of the menu_page_template() function.
+     */
     public function create_admin_menu()
     {
         $capability = 'manage_options';
