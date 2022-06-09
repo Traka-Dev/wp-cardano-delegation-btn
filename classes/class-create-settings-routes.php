@@ -23,6 +23,11 @@ class WP_React_Settings_Rest_Route
             'callback' => [$this, 'get_delegation_btn_params'],
             'permission_callback' => [$this, 'get_settings_permission']
         ]);
+        register_rest_route('wptrkdbtn/v1', '/send-params', [
+            'methods' => 'GET',
+            'callback' => [$this, 'get_send_btn_params'],
+            'permission_callback' => [$this, 'get_settings_permission']
+        ]);
         # POST
         register_rest_route('wptrkdbtn/v1', '/settings', [
             'methods' => 'POST',
@@ -43,18 +48,22 @@ class WP_React_Settings_Rest_Route
         /**
          * network 1 for mainnet 0 for testnet
          */
-        $poolId         = get_option('wptrkdbtn_settings_poolId');
-        $paymentAddress = get_option('wptrkdbtn_settings_paymentAddress');
-        $network        = get_option('wptrkdbtn_settings_network');
-        $testnetApikey  = get_option('wptrkdbtn_settings_testnetApiKey');
-        $mainnetApiKey  = get_option('wptrkdbtn_settings_mainnetApiKey');
+        $poolId                 = get_option('wptrkdbtn_settings_poolId');
+        $paymentAddress         = get_option('wptrkdbtn_settings_paymentAddress');
+        $network                = get_option('wptrkdbtn_settings_network');
+        $testnetApikey          = get_option('wptrkdbtn_settings_testnetApiKey');
+        $mainnetApiKey          = get_option('wptrkdbtn_settings_mainnetApiKey');
+        $isDelegationBtnEnabled = get_option('wptrkdbtn_settings_isDelegationEnabled');
+        $isSendBtnEnabled       = get_option('wptrkdbtn_settings_isSendEnabled');
 
         $response = [
-            'poolId'         => $poolId,
-            'paymentAddress' => $paymentAddress,
-            'network'        => $network,
-            'testnetApiKey'  => $testnetApikey,
-            'mainnetApiKey'  => $mainnetApiKey
+            'poolId'                 => $poolId,
+            'paymentAddress'         => $paymentAddress,
+            'network'                => $network,
+            'testnetApiKey'          => $testnetApikey,
+            'mainnetApiKey'          => $mainnetApiKey,
+            'isDelegationBtnEnabled' => $isDelegationBtnEnabled,
+            'isSendBtnEnabled'       => $isSendBtnEnabled
         ];
 
         return rest_ensure_response($response);
@@ -87,23 +96,40 @@ class WP_React_Settings_Rest_Route
         return rest_ensure_response($response);
     }
 
+    public function get_send_btn_params()
+    {
+        $paymentAddress  = get_option('wptrkdbtn_settings_paymentAddress');
+        $network = get_option('wptrkdbtn_settings_network');
+        $apiKey  = (int)$network === 1 ?
+            get_option('wptrkdbtn_settings_mainnetApiKey') :
+            get_option('wptrkdbtn_settings_testnetApiKey');
+
+        $response = [
+            'paymentAddress'  => $paymentAddress,
+            'network' => $network,
+            'apiKey'  => $apiKey
+        ];
+
+        return rest_ensure_response($response);
+    }
+
 
     /* A function that validates the settings. */
-    static function validate_settings($poolId, $paymentAddress, $network, $testnetApiKey, $mainnetApiKey)
+    static function validate_settings($isDelegationBtnEnabled, $isSendBtnEnabled, $poolId, $paymentAddress, $network, $testnetApiKey, $mainnetApiKey)
     {
-        if (strlen($paymentAddress) < 10) {
+        if (strlen($paymentAddress) < 10 && $isSendBtnEnabled) {
             return false;
         }
 
-        if (strlen($poolId) < 10) {
+        if (strlen($poolId) < 10 && $isDelegationBtnEnabled) {
             return false;
         }
 
-        if (strlen($mainnetApiKey) < 10) {
+        if (strlen($mainnetApiKey) < 10 && $network == 1) {
             return false;
         }
 
-        if (strlen($testnetApiKey) < 10) {
+        if (strlen($testnetApiKey) < 10 && $network == 0) {
             return false;
         }
 
@@ -123,17 +149,28 @@ class WP_React_Settings_Rest_Route
      */
     public function save_settings($req)
     {
-        $poolId         = sanitize_text_field($req['poolId']);
-        $paymentAddress = sanitize_text_field($req['paymentAddress']);
-        $network        = sanitize_text_field($req['network']);
-        $testnetApiKey  = sanitize_text_field($req['testnetApiKey']);
-        $mainnetApiKey  = sanitize_text_field($req['mainnetApiKey']);
-        if (SELF::validate_settings($poolId, $paymentAddress, $network, $testnetApiKey, $mainnetApiKey)) {
-            update_option('wptrkdbtn_settings_poolId', $poolId);
-            update_option('wptrkdbtn_settings_paymentAddress', $paymentAddress);
+        $isDelegationBtnEnabled = sanitize_text_field($req['isDelegationBtnEnabled']);
+        $isSendBtnEnabled       = sanitize_text_field($req['isSendBtnEnabled']);
+        $poolId                 = sanitize_text_field($req['poolId']);
+        $paymentAddress         = sanitize_text_field($req['paymentAddress']);
+        $network                = sanitize_text_field($req['network']);
+        $testnetApiKey          = sanitize_text_field($req['testnetApiKey']);
+        $mainnetApiKey          = sanitize_text_field($req['mainnetApiKey']);
+        if (SELF::validate_settings($isDelegationBtnEnabled, $isSendBtnEnabled, $poolId, $paymentAddress, $network, $testnetApiKey, $mainnetApiKey)) {
+            update_option('wptrkdbtn_settings_isDelegationEnabled', $isDelegationBtnEnabled);
+            if ($isDelegationBtnEnabled) {
+                update_option('wptrkdbtn_settings_poolId', $poolId);
+            }
+            update_option('wptrkdbtn_settings_isSendEnabled', $isSendBtnEnabled);
+            if ($isSendBtnEnabled) {
+                update_option('wptrkdbtn_settings_paymentAddress', $paymentAddress);
+            }
             update_option('wptrkdbtn_settings_network', $network);
-            update_option('wptrkdbtn_settings_testnetApiKey', $testnetApiKey);
-            update_option('wptrkdbtn_settings_mainnetApiKey', $mainnetApiKey);
+            if ($network == 1) {
+                update_option('wptrkdbtn_settings_mainnetApiKey', $mainnetApiKey);
+            } else {
+                update_option('wptrkdbtn_settings_testnetApiKey', $testnetApiKey);
+            }
             return rest_ensure_response('success');
         } else {
             return rest_ensure_response('fail');

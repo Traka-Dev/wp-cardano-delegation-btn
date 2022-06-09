@@ -22,8 +22,8 @@ export const Settings = () => {
     mainnetApiKey: "",
     testnetApiKey: "",
     checked: false,
-    isDelegationBtnEndable: false,
-    isSendBtnEndable: false,
+    isDelegationBtnEnabled: false,
+    isSendBtnEnabled: false,
   }
 
   const [tabValue, setTabValue] = useState(0)
@@ -40,8 +40,15 @@ export const Settings = () => {
 
   useEffect(() => {
     axios.get(url).then(res => {
-      const { poolId, paymentAddress, network, mainnetApiKey, testnetApiKey } =
-        res.data
+      const {
+        isDelegationBtnEnabled,
+        isSendBtnEnabled,
+        poolId,
+        paymentAddress,
+        network,
+        mainnetApiKey,
+        testnetApiKey,
+      } = res.data     
       setFormData({
         poolId: poolId == false ? "" : poolId,
         paymentAddress: paymentAddress == false ? "" : paymentAddress,
@@ -49,12 +56,11 @@ export const Settings = () => {
         mainnetApiKey: mainnetApiKey == false ? "" : mainnetApiKey,
         testnetApiKey: testnetApiKey == false ? "" : testnetApiKey,
         checked: network == 1,
-        isDelegationBtnEndable: false,
-        isSendBtnEndable: false,
+        isDelegationBtnEnabled: isDelegationBtnEnabled == 1,
+        isSendBtnEnabled: isSendBtnEnabled == 1,
       })
     })
   }, [])
-
   const handleChange = e => {
     const { name, value } = e.target
     // Delete error
@@ -150,18 +156,18 @@ export const Settings = () => {
 
   const validate = async formData => {
     const errors = {}
-    if (formData.isDelegationBtnEndable) {
+    if (formData.isDelegationBtnEnabled) {
       if (formData.poolId.length < 10) {
         //invalid Pool ID
         errors.poolId = "Invalid Pool ID"
       }
     }
-    if (formData.isSendBtnEndable) {
+    if (formData.isSendBtnEnabled) {
       if (formData.network == 1) {
-        const format = formData.paymentAddress.startsWith("add1")
+        const format = formData.paymentAddress.startsWith("addr1")
         if (!format) errors.paymentAddress = "Wrong network address"
       } else {
-        const format = formData.paymentAddress.startsWith("add_test1")
+        const format = formData.paymentAddress.startsWith("addr_test1")
         if (!format) errors.paymentAddress = "Wrong network address"
       }
       if (formData.paymentAddress.length < 10) {
@@ -222,14 +228,14 @@ export const Settings = () => {
   const handleDelegationIsEnable = () => {
     setFormData({
       ...formData,
-      isDelegationBtnEndable: !formData.isDelegationBtnEndable,
+      isDelegationBtnEnabled: !formData.isDelegationBtnEnabled,
     })
   }
 
   const handleSendIsEnable = () => {
     setFormData({
       ...formData,
-      isSendBtnEndable: !formData.isSendBtnEndable,
+      isSendBtnEnabled: !formData.isSendBtnEnabled,
     })
   }
 
@@ -248,12 +254,12 @@ export const Settings = () => {
         draggable: true,
       })
     }
-    if(formErrors.hasOwnProperty("poolId") && tabValue == 1){
+    if (formErrors.hasOwnProperty("poolId") && tabValue == 1) {
       setTabValue(0)
     }
-    if(formErrors.hasOwnProperty("paymentAddress") && tabValue == 0){
+    if (formErrors.hasOwnProperty("paymentAddress") && tabValue == 0) {
       setTabValue(1)
-    }    
+    }
   }, [formErrors])
 
   return (
@@ -300,7 +306,7 @@ export const Settings = () => {
             >
               <Typography>Disabled</Typography>
               <Switch
-                checked={formData.isDelegationBtnEndable}
+                checked={formData.isDelegationBtnEnabled}
                 id="switchSettings"
                 onChange={handleChange}
               />
@@ -357,7 +363,7 @@ export const Settings = () => {
             >
               <Typography>Disabled</Typography>
               <Switch
-                checked={formData.isSendBtnEndable}
+                checked={formData.isSendBtnEnabled}
                 id="switchSettings"
                 onChange={handleChange}
               />
