@@ -16,7 +16,7 @@ class WP_React_Delegation_Cardano_Btn
             window.mytrkBasePath = "' . WPTRKDBTN_URL . '";
         </script>
         <div class=wrap>
-            <div id="wptrkdbtn-app"></div>
+            <div id="wptrkdbtn-delegation"></div>
         </div>';
     }
 
@@ -26,8 +26,8 @@ class WP_React_Delegation_Cardano_Btn
         if (strpos($handle, "async")) :
             $tag = str_replace(' src', ' async="async" src', $tag);
         endif;
-        if ($handle === "wp-TRKDBTN-app") :
-            $tag = str_replace(' src', ' defer="defer" src', $tag);
+        if ($handle === "wp-TRKDBTN-tip") :
+            $tag = str_replace(' src', ' async="async" defer="defer" src', $tag);
         endif;
         return $tag;
     }

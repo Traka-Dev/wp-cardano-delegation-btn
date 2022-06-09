@@ -1,6 +1,6 @@
 import React from "react"
 import axios from "axios"
-import CardanoWalletsApi, { findWallet } from "../utils/cardano-wallets-api"
+//import CardanoWalletsApi, { findWallet } from "../utils/cardano-wallets-api"
 import { DelegationBtn } from "./DelegationBtn"
 import { toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
@@ -24,7 +24,7 @@ export const Delegation = () => {
       const poolId = getPoolId.data.poolId
       const network = getPoolId.data.network
       const apiKey = getPoolId.data.apiKey
-      const WASM_lib = await import("@emurgo/cardano-serialization-lib-browser")
+      const WASM_lib = null //await import("@emurgo/cardano-serialization-lib-browser")
       await delegate(poolId, apiKey, WASM_lib, network, walletName)
     }
   }
@@ -37,7 +37,7 @@ export const Delegation = () => {
     return (
       <>
         <span>Delegated 👌</span>
-        <a href={`${explorer}${tx}`} target="_blank" rel="noreferrer">
+        <a href={`${explorer}${tx}`} target="_blank" rel="nofollow">
           Transaction
         </a>
       </>

@@ -1,13 +1,14 @@
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const Dotenv = require('dotenv-webpack');
+const webpack = require('webpack');
+
 
 module.exports = {
     entry: {
         app: './src/index.js',
         adminApp: './src/adminApp.js',
-    },
-    devServer: {
-        static: './dist',
+        send: './src/SendBtnApp.js',
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
@@ -56,6 +57,10 @@ module.exports = {
         new MiniCssExtractPlugin({
             filename: '[name].css',
         }),
+        new Dotenv(),
+        new webpack.ProvidePlugin({
+            Buffer: ['buffer', 'Buffer'],
+        }),
     ],
     experiments: {
         asyncWebAssembly: true,
@@ -64,5 +69,6 @@ module.exports = {
         // Allow to output ESM
         topLevelAwait: true,
         // Allow to use await on module evaluation (Proposal)
+        layers: true,
     }
 };

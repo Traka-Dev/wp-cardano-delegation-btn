@@ -49,13 +49,21 @@ function load_admin_scripts()
  */
 function load_scripts()
 {
-    wp_enqueue_script('wp-TRKDBTN-app', WPTRKDBTN_URL . 'dist/app.js', ['jquery', 'wp-element'], wp_rand(), true);
+    /*wp_enqueue_script('wp-TRKDBTN-app', WPTRKDBTN_URL . 'dist/app.js', ['jquery', 'wp-element'], wp_rand(), true);
     wp_localize_script('wp-TRKDBTN-app', 'appLocalizer', [
         'apiUrl' => home_url('/wp-json'),
         'nonce' => wp_create_nonce('wp_rest'),
-    ]);
+    ]);*/
     wp_register_style('toast_styles', WPTRKDBTN_URL . 'dist/app.css');
     wp_enqueue_style('toast_styles');
+
+    wp_enqueue_script('wp-TRKDBTN-send', WPTRKDBTN_URL . 'dist/send.js', ['jquery', 'wp-element'], wp_rand(), true);
+    wp_localize_script('wp-TRKDBTN-send', 'appLocalizer', [
+        'apiUrl' => home_url('/wp-json'),
+        'nonce' => wp_create_nonce('wp_rest'),
+    ]);
+    wp_register_style('tip_styles', WPTRKDBTN_URL . 'dist/send.css');
+    wp_enqueue_style('tip_styles');
 }
 
 require_once WPTRKDBTN_PATH . 'classes/class-create-admin-menu.php';
